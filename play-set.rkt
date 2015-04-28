@@ -119,7 +119,7 @@
                (lambda (slider-value)
                  (let ([adjusted-value (* 3 (- 12 slider-value))])
                    (cond ((zero? adjusted-value)
-                          ((lambda ()
+                          (begin
                              (map (lambda (user)
                                          ;; check if user is an autobot
                                     (if (equal? 'autobot (get-type user))
@@ -127,9 +127,9 @@
                                         (toggle-autobot user #:on? #t)
                                         #f))
                                   (queue->list user-queue))
-                             (send-msg "Turned on robots!" msg-panel))))
+                             (send-msg "Turned on robots!" msg-panel)))
                          ((= 3 adjusted-value)
-                          ((lambda ()
+                          (begin
                              (map (lambda (user)
                                          ;; check if user is an autobot
                                     (if (equal? 'autobot (get-type user))
@@ -137,12 +137,12 @@
                                         (toggle-autobot user #:on? #f)
                                         #f))
                                   (queue->list user-queue))
-                             (send-msg "Turned off robots!" msg-panel))))
+                             (send-msg "Turned off robots!" msg-panel)))
                          ((= 6 adjusted-value)
-                          ((lambda ()
+                          (begin
                              (send-msg "Fighting a ghost!" msg-panel)
                              (make-autobot user-queue
-                                (list ghosting user-queue dealer1)))))
+                                (list ghosting user-queue dealer1))))
                          (else
                           (let ([adjusted-time (- adjusted-value 6)])
                                (send-msg 

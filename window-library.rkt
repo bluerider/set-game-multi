@@ -134,10 +134,10 @@
       ;; check if an old set panel was passed
       (if (null? old-set-panel)
 	  #f
-	  ((lambda ()
-		  ;; disable and delete old set panel
-		  (send old-set-panel enable #f)
-		  (send set-master-panel delete-child old-set-panel))))
+	  (begin
+            ;; disable and delete old set panel
+            (send old-set-panel enable #f)
+            (send set-master-panel delete-child old-set-panel)))
       ;; set up cards
       (set-up-cards (get-backing-size split-matrix set-master-panel))
       ;; return the set-panel
@@ -283,9 +283,9 @@
 				         (if (= old-size current-size)
 				             #f
 				             ;; notify the user that a new set was found
-				             ((lambda ()
+				             (begin
 				              (send-msg "Found set!" msg-panel)
-				              (found-set-sound))))
+				              (found-set-sound)))
 					 ;; sleep for 250 ms
 					 (sleep .250)
 				         (threaded-notify current-size)))])
@@ -302,10 +302,10 @@
      ;;    check if the dealer has less than 15 cards left
      (if (and (>= 15 (length (show-hand dealer)))
               (null? (find-all-sets (show-hand dealer))))
-         ((lambda ()
+         (begin
             (send-msg "Game Over!" msg-panel)
             (game-over-sound)
-            (kill-thread (current-thread))))
+            (kill-thread (current-thread)))
          #f)
      ;; sleep for 250 ms
      (sleep .250)
@@ -326,10 +326,10 @@
 	  ;; check if an old set panel was passed
       (if (null? old-set-panel)
 	  #f
-	  ((lambda ()
-		  ;; disable and delete old set panel
-		  (send old-set-panel enable #f)
-		  (send set-master-panel delete-child old-set-panel))))
+	  (begin
+            ;; disable and delete old set panel
+            (send old-set-panel enable #f)
+            (send set-master-panel delete-child old-set-panel)))
       ;; set up the cards
       (for-each (lambda (card-clump)
                               ;; generate a column

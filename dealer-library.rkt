@@ -42,22 +42,22 @@
   (let ([hand-list (show-and-empty-hand user)])
 	   ;; check if the user's hand contains a set
        (if (set? hand-list)
-           ((lambda ()
-                    ;; add the found set to the user's and dealer's found-set queue
-                    (add-set user hand-list)
-                    (add-set dealer hand-list)
-                    (add-time user)
-                    (add-time dealer)
-                    ;; remove the card from the dealer's deck
-                    (for-each (lambda (card)
-                                      (remove-card dealer card))
-			      hand-list)
-                    ;; reduce the # of cards by 3 if there are more than 12 cards
-                    ;;  or if the dealer has at most 12 cards left
-                    (let ([num-cards (get-number-of-shown-cards dealer)])
-                         (if (or (< 12 num-cards) (> 12 (length (show-hand dealer))))
-                             (update-number-of-shown-cards dealer (- num-cards 3))
-                             #t))))
+           (begin
+            ;; add the found set to the user's and dealer's found-set queue
+            (add-set user hand-list)
+            (add-set dealer hand-list)
+            (add-time user)
+            (add-time dealer)
+            ;; remove the card from the dealer's deck
+            (for-each (lambda (card)
+                        (remove-card dealer card))
+                      hand-list)
+            ;; reduce the # of cards by 3 if there are more than 12 cards
+            ;;  or if the dealer has at most 12 cards left
+            (let ([num-cards (get-number-of-shown-cards dealer)])
+                 (if (or (< 12 num-cards) (> 12 (length (show-hand dealer))))
+                     (update-number-of-shown-cards dealer (- num-cards 3))
+                     #t)))
 	   #f)))
 
 ;; update the dealer's # of shown cards

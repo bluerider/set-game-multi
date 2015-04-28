@@ -1,0 +1,14 @@
+(DONE) USER and DEALER structs are set up
+(DONE) Need to write up A/I using user struct
+(DONE) Need to allow the transfer of dealer from one instance to the next
+(DONE) Dealer and user has copy of found-sets. We can offer another pane to show the found-sets
+(DONE) Serialize dealer via net-dealer-library.rkt
+(DONE) Add global user queue for robots and humans
+4) Start up racket server for multiplayer gaming
+   --- pass it over SSL to clients (all set-games must have web sockets)
+5) Add chat list
+DONE Scalable set cards
+      -- currently does rescale
+      -- need to have cards scaled by the size of set-master-panel
+           which should be set upon resizing the set master-window
+      --GLITCH, Fullscreen when there are no extra cards left seems to hang the gui
