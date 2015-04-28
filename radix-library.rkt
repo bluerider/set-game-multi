@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;; Card Integer Library
 ;; supplies decimal->card and card->decimal functions

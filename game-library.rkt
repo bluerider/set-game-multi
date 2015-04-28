@@ -1,6 +1,10 @@
-#lang racket
+#lang racket/base
 
 (require "radix-library.rkt")
+(require racket/list)
+(require racket/bool)
+(require racket/future)
+(require racket/place)
 
 (provide factorial)
 (provide combinatorial)

@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;; user library
 
@@ -22,6 +22,8 @@
 
 ;; require the following modules
 (require data/queue)
+(require racket/bool)
+(require racket/list)
 
 
 ;; structs for user and dealer

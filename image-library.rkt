@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;; require the following modules
 (require racket/draw)

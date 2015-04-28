@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;; library to handle A/I operations
 
@@ -7,6 +7,7 @@
 (require "user-library.rkt")
 (require "dealer-library.rkt")
 (require data/queue)
+(require racket/bool)
 
 ;; provide the following modules
 (provide make-autobot)

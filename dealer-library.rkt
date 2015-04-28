@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;; library to handle dealer operations
 
@@ -15,6 +15,7 @@
 (require "game-library.rkt")
 (require "user-library.rkt")
 (require data/queue)
+(require racket/list)
 
 ;; create the dealer struct from the user struct
 ;;  has an extra parameter for the # of cards to show from the top of the deck

@@ -1,4 +1,4 @@
-#lang racket/gui
+#lang racket/base
 
 ;; GUI library for play-set
 
@@ -28,6 +28,10 @@
 (require "dealer-library.rkt")
 (require "sound-library.rkt")
 (require data/queue)
+(require racket/gui/base)
+(require racket/class)
+(require racket/bool)
+(require racket/list)
 
 ;; generate new card-button class derived from button class
 (define card-button%

@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;; play the game of set with a gui
 
@@ -10,6 +10,8 @@
 (require "dealer-library.rkt")
 (require "sound-library.rkt")
 (require data/queue)
+(require racket/class)
+(require racket/bool)
 
 ;; generate a new-game with a given [struct] dealer
 ;;   a [queue] user

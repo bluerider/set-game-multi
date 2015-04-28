@@ -1,4 +1,4 @@
-#lang racket/gui
+#lang racket/base
 
 ;; provide the following modules
 (provide found-set-sound)
@@ -6,6 +6,7 @@
 (provide game-music)
 
 ;; package all sound files with executable
+(require racket/gui/base)
 (require racket/runtime-path)
 (define-runtime-path sounds "sounds")
 
