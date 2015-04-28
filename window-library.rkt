@@ -32,6 +32,7 @@
 (require racket/class)
 (require racket/bool)
 (require racket/list)
+(require racket/function)
 
 ;; generate new card-button class derived from button class
 (define card-button%
@@ -189,21 +190,22 @@
                  ;; get the new size of the panel
                  (get-panel-size set-master-panel)))))
   ;; launch refresh panel thread
-  (thread (lambda ()
-             ;; yield the thread
-             (sleep 0)
-             ;; run the set-panel-refresh instance
-             (threaded-panel-refresh (deal-cards dealer) 
-                (cards->columns (deal-cards dealer) 
-                                user dealer set-master-panel 
-                                '() 
-                                msg-panel)
-                ;; get the current window size
-                (get-panel-size set-master-panel)))))
+  (thread (thunk
+            ;; yield the thread
+            (sleep 0)
+            ;; run the set-panel-refresh instance
+            (threaded-panel-refresh
+              (deal-cards dealer) 
+              (cards->columns (deal-cards dealer) 
+                              user dealer set-master-panel 
+                              '() 
+                              msg-panel)
+              ;; get the current window size
+              (get-panel-size set-master-panel)))))
                 
 ;; insert a timer in the time-panel
 (define (set-timer user time-panel)
-  (letrec ([threaded-timer (lambda ()
+  (letrec ([threaded-timer (thunk
                              (letrec ([user-start (start-time user)]
                                       [current-time (current-milliseconds)]
                                       [real-time (/ (- current-time user-start) 
@@ -227,11 +229,11 @@
 				   (sleep 1)
 				   ;; recurse the set-timer
 				   (threaded-timer))])
-          (thread (lambda ()
-                          ;; yield the thread
-                          (sleep 0)
-                          ;; insert a timer in the time-panel
-                          (threaded-timer)))))
+          (thread (thunk
+                    ;; yield the thread
+                    (sleep 0)
+                    ;; insert a timer in the time-panel
+                    (threaded-timer)))))
           
 ;; insert a user set counter in the time-panel
 (define (user-set-counter user user-sets-panel)
@@ -250,11 +252,11 @@
 				        (sleep 0.25)
                                         ;;recurse the user-set-counter
                                         (threaded-counter current-size)))])
-       (thread (lambda ()
-		       ;; yield the thread
-                       (sleep 0)
-                       ;; insert a user-set counter in the user-sets-panel
-                       (threaded-counter -1)))))
+       (thread (thunk
+                 ;; yield the thread
+                 (sleep 0)
+                 ;; insert a user-set counter in the user-sets-panel
+                 (threaded-counter -1)))))
 
 ;; use user-set-counter for a user queue
 (define (users-set-counter user-queue msg-panel)
@@ -274,11 +276,11 @@
           (sleep .250)
           ;; recurse and pass current new users
           (threaded-notify (append new-users prev-users))))
-  (thread (lambda ()
-                  ;; yield the thread
-                  (sleep 0)
-                  ;; look for changes in the user-queue
-                  (threaded-notify '()))))
+  (thread (thunk
+            ;; yield the thread
+            (sleep 0)
+            ;; look for changes in the user-queue
+            (threaded-notify '()))))
                   
 ;; insert a counter to notify the user whenever they found a set
 (define (notify-set-found user msg-panel)
@@ -293,10 +295,10 @@
 					 ;; sleep for 250 ms
 					 (sleep .250)
 				         (threaded-notify current-size)))])
-	  (thread (lambda ()
-	                  ;; yield the thread
-	                  (sleep 0)
-	                  (threaded-notify (sets-size user))))))
+	  (thread (thunk
+                    ;; yield the thread
+                    (sleep 0)
+                    (threaded-notify (sets-size user))))))
 	                  
 ;; check if the game is over
 (define (notify-game-over dealer msg-panel)
@@ -314,7 +316,7 @@
      ;; sleep for 250 ms
      (sleep .250)
      (threaded-notify))
-  (thread (lambda ()
+  (thread (thunk
             ;; yield the thread
             (sleep 0)
             (threaded-notify))))
@@ -372,12 +374,12 @@
                     (view-sets user 
                               set-master-panel 
                               old-panel)))))
-     (thread (lambda ()
-                ;; yield the thread
-                (sleep 0)
-                ;; run the set-panel-refresh instance
-                (threaded-panel-refresh (flatten (get-sets user)) 
-                                        (view-sets user set-master-panel '()))))
+     (thread (thunk
+               ;; yield the thread
+               (sleep 0)
+               ;; run the set-panel-refresh instance
+               (threaded-panel-refresh (flatten (get-sets user)) 
+                                       (view-sets user set-master-panel '()))))
      ;; show the set-master-panel
      (send set-master-panel show #t)
      ;; return the set-master-panel object
