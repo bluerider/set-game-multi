@@ -65,7 +65,7 @@
 ;; send a message to the msg-panel
 (define (send-msg msg msg-panel)
   (send msg-panel set-label msg))
-                                      
+
 (define (get-hint dealer msg-panel)
   (let ([found-sets (length (find-all-sets (deal-cards dealer)))])
        (send-msg (string-append (number->string found-sets)
@@ -108,7 +108,7 @@
         (cons (take lat gsf)
               (iterator (drop lat gsf)))))
   (iterator card-pool))
-	  
+
 ;; draw the cards on the set-panel
 ;;   need a set-matrix
 ;;   needs a user (user doesn't have to do anything though)
@@ -125,12 +125,12 @@
                     (let ([column (new vertical-panel% [parent set-panel])])
                          (for-each (lambda (new-card)
                                      ;; generate the card button
-                                     (let ([card-button 
+                                     (let ([card-button
                                              (make-card column
                                              ;; get image for card with scale
                                              (number->image new-card scale)
                                                (lambda (button)
-                                                  (user-click button user 
+                                                  (user-click button user
                                                      dealer msg-panel)))])
                                           ;; enter the card's value into the card field
                                           (set-field! card card-button new-card)))
@@ -147,13 +147,13 @@
       (set-up-cards (get-backing-size split-matrix set-master-panel))
       ;; return the set-panel
       set-panel))
-      
+
 ;; get the backing size for cards in a panel
 (define (get-backing-size split-matrix set-master-panel)
   ;; get the greatest scaling factor
   (car (sort (map (lambda (panel-size bitmap-size dimension)
                     ;; get the scaling factor for a dimension
-                    (/ (* bitmap-size dimension) 
+                    (/ (* bitmap-size dimension)
                        panel-size))
                   ;; get panel size
                   (list (send set-master-panel get-width)
@@ -164,7 +164,7 @@
                   (list (length split-matrix)
                         (length (car split-matrix))))
              >)))
-                
+
 ;; refresh the set-panel every 250 milliseconds
 (define (set-panel-refresh user dealer set-master-panel msg-panel)
   ;; get size of panel in (width height)
@@ -182,10 +182,10 @@
                   (zero? (length (show-hand dealer)))
                   (and (equal? old-hand new-hand)
                        (equal? old-size (get-panel-size set-master-panel))))
-              (threaded-panel-refresh old-hand old-panel 
+              (threaded-panel-refresh old-hand old-panel
                  (get-panel-size set-master-panel))
-              (threaded-panel-refresh new-hand 
-                 (cards->columns new-hand user dealer set-master-panel 
+              (threaded-panel-refresh new-hand
+                 (cards->columns new-hand user dealer set-master-panel
                                  old-panel msg-panel)
                  ;; get the new size of the panel
                  (get-panel-size set-master-panel)))))
@@ -195,35 +195,35 @@
             (sleep 0)
             ;; run the set-panel-refresh instance
             (threaded-panel-refresh
-              (deal-cards dealer) 
-              (cards->columns (deal-cards dealer) 
-                              user dealer set-master-panel 
-                              '() 
+              (deal-cards dealer)
+              (cards->columns (deal-cards dealer)
+                              user dealer set-master-panel
+                              '()
                               msg-panel)
               ;; get the current window size
               (get-panel-size set-master-panel)))))
-                
+
 ;; insert a timer in the time-panel
 (define (set-timer user time-panel)
   (letrec ([threaded-timer (thunk
                              (letrec ([user-start (start-time user)]
                                       [current-time (current-milliseconds)]
-                                      [real-time (/ (- current-time user-start) 
+                                      [real-time (/ (- current-time user-start)
                                                     1000)]
                                       [real-time-minutes (floor (/ real-time 60))]
-                                      [real-time-seconds 
-                                         (round (- real-time 
+                                      [real-time-seconds
+                                         (round (- real-time
                                                    (* real-time-minutes 60)))])
                                      ;; update time panel with current passed time
-                                     (send time-panel set-label 
-                                        (string-append 
+                                     (send time-panel set-label
+                                        (string-append
                                            (number->string real-time-minutes)
                                               (string-append ":"
                                                 (if (> 10 real-time-seconds)
-                                                    (string-append "0" 
-                                                       (number->string 
+                                                    (string-append "0"
+                                                       (number->string
                                                           real-time-seconds))
-                                                    (number->string 
+                                                    (number->string
                                                        real-time-seconds))))))
 				   ;; sleep for 1 second
 				   (sleep 1)
@@ -234,7 +234,7 @@
                     (sleep 0)
                     ;; insert a timer in the time-panel
                     (threaded-timer)))))
-          
+
 ;; insert a user set counter in the time-panel
 (define (user-set-counter user user-sets-panel)
   (letrec ([threaded-counter  (lambda (old-size)
@@ -242,7 +242,7 @@
                                         (if (= old-size current-size)
 					    #f
                                             ;; update the user-sets-panel with the # found sets
-                                            (send user-sets-panel set-label 
+                                            (send user-sets-panel set-label
 ;;                                               (string-append "Sets Found: "
                                               (string-append ""
                                                  (string-append (number->string current-size)
@@ -266,9 +266,9 @@
          (if (null? new-users)
              #f
              ;; generate a counter for each new user
-             (for-each 
+             (for-each
                (lambda (user)
-                 (user-set-counter user (gen-child-msg-panel msg-panel 
+                 (user-set-counter user (gen-child-msg-panel msg-panel
                                            "User Sets: " #f)))
                ;; get only new users
                new-users))
@@ -281,7 +281,7 @@
             (sleep 0)
             ;; look for changes in the user-queue
             (threaded-notify '()))))
-                  
+
 ;; insert a counter to notify the user whenever they found a set
 (define (notify-set-found user msg-panel)
   (letrec ([threaded-notify (lambda (old-size)
@@ -299,7 +299,7 @@
                     ;; yield the thread
                     (sleep 0)
                     (threaded-notify (sets-size user))))))
-	                  
+
 ;; check if the game is over
 (define (notify-game-over dealer msg-panel)
   (define (threaded-notify)
@@ -320,7 +320,7 @@
             ;; yield the thread
             (sleep 0)
             (threaded-notify))))
-	                  
+
 ;; generate a floating window of all found-sets
 (define (view-sets user set-master-panel old-set-panel)
   (letrec ([found-sets (if (null? (get-sets user))
@@ -371,20 +371,20 @@
                      (equal? old-hand new-hand))
                  (threaded-panel-refresh old-hand old-panel)
                  (threaded-panel-refresh new-hand
-                    (view-sets user 
-                              set-master-panel 
+                    (view-sets user
+                              set-master-panel
                               old-panel)))))
      (thread (thunk
                ;; yield the thread
                (sleep 0)
                ;; run the set-panel-refresh instance
-               (threaded-panel-refresh (flatten (get-sets user)) 
+               (threaded-panel-refresh (flatten (get-sets user))
                                        (view-sets user set-master-panel '()))))
      ;; show the set-master-panel
      (send set-master-panel show #t)
      ;; return the set-master-panel object
      set-master-panel))
-			                          
+
 ;; easy horizontal panel generation
 (define (gen-horizontal-panel frame width?)
    (new horizontal-panel% [parent frame]
@@ -397,32 +397,20 @@
                           [stretchable-height #t]
                           [min-width 455]
                           [min-height 240]))
-                          
+
 ;; generate message panels
 (define (gen-child-msg-panel msg-panel name width?)
    (new message% [parent msg-panel]
                  [label name]
                  [auto-resize #t]
                  [stretchable-width width?]))
-                 
+
 (define (gen-set-frame label fullscreen?)
-  (if (false? fullscreen?)
-      (new frame% [label label]
-                  [alignment '(center center)])
-      (new frame% [label label]
-                  [alignment '(center center)]
-                  [width (call-with-values
-                           (lambda ()
-                             (get-display-size))
-                           (lambda (width height)
-                             width))]
-                  [height (call-with-values
-                            (lambda ()
-                              (get-display-size))
-                            (lambda (width height)
-                              height))]
-                  [style (list 'no-caption)])))
-                 
+  (let ([new-frame (new frame% [label label]
+                               [alignment '(center center)])])
+     (send new-frame fullscreen fullscreen?)
+     new-frame))
+
 ;; generate the Robot slider
 (define (gen-robot-slider panel robot-proc)
    (new slider% [parent (new vertical-panel% [parent panel]

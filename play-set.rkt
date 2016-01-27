@@ -16,23 +16,11 @@
 ;; generate a new-game with a given [struct] dealer
 ;;   a [queue] user
 ;;   a [boolean] fullscreen
-;; ;;   a [panel%] prev-window
-;;   a [queue] prev-window = (boolean frame%)
 ;;   a [boolean] music?
 (define gen-new-game
   (lambda (#:user-queue [user-queue (make-queue)]
            #:dealer [dealer (make-dealer (shuffle-deck))]
            #:fullscreen? [fullscreen? #f]
-           #:prev-window [prev-window (let ([window-list (make-queue)])
-                                        (enqueue! window-list
-                                          (list (not fullscreen?)
-                                            (gen-new-game #:user-queue user-queue
-                                                          #:dealer dealer
-                                                          #:fullscreen? (not fullscreen?)
-                                                          #:prev-window window-list
-                                                          #:music? #f
-                                                          #:notifications? #f)))
-                                        window-list)]
            #:music? [music? #t]
            #:notifications? [notifications? #t])
     (letrec (;; set up some windowing
@@ -48,9 +36,9 @@
                            "Howdy! Welcome to Set!"
                            #t)]
              ;; make a user if users weren't pass, else take the first one
-             [user1 (if (andmap queue-empty? (list user-queue prev-window))
+             [user1 (if (queue-empty? user-queue)
                         (make-user user-queue)
-                        (car (queue->list user-queue)))]
+                        (car user-queue))]
              ;; just set the dealer's name
              [dealer1 dealer])
             ;; tell the dealer to show 12 cards from the top of the deck
@@ -84,14 +72,11 @@
                                   "Full Screen"
                                   "Shrink")
                          (lambda (button)
-                           (send set-master-window show #f)
-                           ;; get the opposite of fullscreen? window prev-window queue
-                           ;;   prev-window = (boolean window)
-                           (send (cadar (filter (lambda (pair)
-                                                  (eq? (car pair)
-                                                       (not fullscreen?)))
-                                                (queue->list prev-window)))
-                                 show #t))
+                           (send set-master-window fullscreen (not (send set-master-window is-fullscreened?)))
+                           ;; update the button label
+                           (send button set-label (if (not (false? (send set-master-window is-fullscreened?)))
+                                                      "Full Screen"
+                                                      "Shrink")))
                          #f)
                        (list "Draw 3 cards" 
                          (lambda (button)
@@ -158,10 +143,6 @@
 	    ;; run threaded window refresher
 	    (set-panel-refresh user1 dealer1 set-master-panel msg-panel)
 	    ;; run threaded set-counter
-;; 	    (user-set-counter user1
-;;                (gen-child-msg-panel master-msg-panel
-;;                   "User Sets: " #f))
-;;             ;; use user-queue threaded set-counter
             (users-set-counter user-queue
                (gen-horizontal-panel master-msg-panel #f))
             ;; run threaded timer using dealer
@@ -178,11 +159,6 @@
 	    (if (false? music?)
 	        #f
 	        (game-music))
-            ;; add the current set-master-window to the prev-window queue
-            ;;   check if queue-length = 1 to avoid double adding
-            (if (= 1 (queue-length prev-window))
-                (enqueue! prev-window (list fullscreen? set-master-window))
-                #f)
 	    ;; return the set-master-window
 	    set-master-window)))
 
