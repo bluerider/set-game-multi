@@ -35,7 +35,7 @@
                           (if (flonum? number)
                               (fl->exact-integer number)
                               number))
-                       ".gif"))))
+                       ".png"))))
 
 ;; convert number to image
 (define (number->image number scale)

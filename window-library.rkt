@@ -159,7 +159,7 @@
                   (list (send set-master-panel get-width)
                         (send set-master-panel get-height))
                   ;; card bitmap 96x52 (wxh)
-                  '(96 52)
+                  '(462 280)
                   ;; get dimensions of split-matrix\
                   (list (length split-matrix)
                         (length (car split-matrix))))
