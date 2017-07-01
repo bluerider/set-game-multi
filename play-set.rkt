@@ -59,10 +59,10 @@
 	    (current-subprocess-custodian-mode 'kill)
             ;; set up some buttons
             (for-each (lambda (button-list)
-                        (make-button button-panel (car button-list) 
+                        (make-button button-panel (car button-list)
                                                   (cadr button-list)
                                                   (caddr button-list)))
-                 (list (list "New Game" (lambda (button) 
+                 (list (list "New Game" (lambda (button)
                                            (send (gen-new-game #:music? #f
                                                                #:notifications? notifications?
                                                                #:fullscreen? fullscreen?)
@@ -75,10 +75,10 @@
                            (send set-master-window fullscreen (not (send set-master-window is-fullscreened?)))
                            ;; update the button label
                            (send button set-label (if (not (false? (send set-master-window is-fullscreened?)))
-                                                      "Full Screen"
-                                                      "Shrink")))
+                                                      "Shrink"
+                                                      "Full Screen")))
                          #f)
-                       (list "Draw 3 cards" 
+                       (list "Draw 3 cards"
                          (lambda (button)
                            (if (false? (draw-3-cards dealer1))
                                        (send-msg "No more cards to draw" msg-panel)
@@ -88,7 +88,7 @@
                          (lambda (button)
                             (get-hint dealer1 msg-panel))
                          #f)
-                       (list "User Sets" 
+                       (list "User Sets"
                          (lambda (button)
                            (send user-view show
                              (not (send user-view is-shown?))))
@@ -132,13 +132,13 @@
                                 (list ghosting user-queue dealer1))))
                          (else
                           (let ([adjusted-time (- adjusted-value 6)])
-                               (send-msg 
+                               (send-msg
                                  (string-append "Fighting a robot in "
                                    (string-append (number->string adjusted-time)
                                                   " seconds"))
                                          msg-panel)
                                (make-autobot user-queue
-                                 (list time-delay dealer1 
+                                 (list time-delay dealer1
                                        adjusted-time))))))))
 	    ;; run threaded window refresher
 	    (set-panel-refresh user1 dealer1 set-master-panel msg-panel)
@@ -165,6 +165,6 @@
 ;; generate a new game
 (define (new-game)
   (send (gen-new-game) show #t))
-   
+
 ;; run some programs
 (new-game)
